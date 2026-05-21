@@ -40,3 +40,6 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log(`Server is running in development mode on port ${PORT}`);
 });
+
+// Export app for Vercel Serverless Functions
+export default app;
