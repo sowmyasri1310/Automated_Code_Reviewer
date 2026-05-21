@@ -49,8 +49,15 @@ export default function App() {
     try {
       const response = await fetch(`${BACKEND_URL}/history`);
       if (response.ok) {
-        const data = await response.json();
-        setHistoryList(data);
+        const responseText = await response.text();
+        try {
+          const data = JSON.parse(responseText);
+          setHistoryList(data);
+        } catch (parseErr) {
+          console.error('Failed to parse history response as JSON. Raw response:', responseText.substring(0, 200));
+        }
+      } else {
+        console.error('Fetch history failed with status:', response.status);
       }
     } catch (err) {
       console.error('Failed to load history list:', err);
@@ -121,7 +128,13 @@ export default function App() {
         body: JSON.stringify({ code, language, personality })
       });
 
-      const data = await response.json();
+      let data;
+      const responseText = await response.text();
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseErr) {
+        throw new Error(`Server returned an invalid format: ${responseText.substring(0, 150)}...`);
+      }
       
       if (!response.ok) {
         throw new Error(data.error || 'Server error occurred during review');
@@ -169,7 +182,13 @@ export default function App() {
         body: JSON.stringify({ code, codeB, language })
       });
 
-      const data = await response.json();
+      let data;
+      const responseText = await response.text();
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseErr) {
+        throw new Error(`Server returned an invalid format: ${responseText.substring(0, 150)}...`);
+      }
 
       if (!response.ok) {
         throw new Error(data.error || 'Server error occurred during comparison');

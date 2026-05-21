@@ -5,7 +5,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build && cd .. && cp -r frontend/dist dist",
-    "vercel-build": "cd frontend && npm install && npm run build && cd .. && cp -r frontend/dist dist"
+    "build": "cd frontend && npm install && npm run build && cd .. && node -e \"const fs = require('fs'); fs.cpSync('frontend/dist', 'dist', { recursive: true });\"",
+    "vercel-build": "cd frontend && npm install && npm run build && cd .. && node -e \"const fs = require('fs'); fs.cpSync('frontend/dist', 'dist', { recursive: true });\""
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.11.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.0"
   }
 }

@@ -275,4 +275,10 @@ router.delete('/history/:id', async (req, res) => {
   }
 });
 
+// Catch-all 404 handler for all other API endpoints
+router.use('*', (req, res) => {
+  res.status(404).json({ error: 'API endpoint not found' });
+});
+
 export default router;
+
