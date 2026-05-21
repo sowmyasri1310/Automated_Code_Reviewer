@@ -255,7 +255,7 @@ router.get('/history', async (req, res) => {
     res.json(history);
   } catch (error) {
     console.error('Fetch history error:', error);
-    res.status(500).json({ error: 'Failed to fetch history log' });
+    res.status(500).json({ error: `Database Connection Issue: ${error.message}. Please verify your MongoDB Atlas settings & ensure IP Whitelist 0.0.0.0/0 is configured.` });
   }
 });
 
