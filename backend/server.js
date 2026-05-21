@@ -19,7 +19,6 @@ mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('Successfully connected to MongoDB database.'))
   .catch(err => {
     console.error('Database connection error occurred:', err);
-    process.exit(1);
   });
 
 // API Routes
