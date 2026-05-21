@@ -35,10 +35,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'An unexpected server error occurred' });
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`Server is running in development mode on port ${PORT}`);
-});
+// Start Server (only if not running on Vercel serverless)
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Server is running in development mode on port ${PORT}`);
+  });
+}
 
 // Export app for Vercel Serverless Functions
 export default app;
