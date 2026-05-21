@@ -303,7 +303,6 @@ export default function App() {
             display: 'flex', 
             alignItems: 'center', 
             gap: '0.35rem', 
-            fontSize: '0.8rem', 
             color: 'var(--text-secondary)',
             fontFamily: 'var(--font-mono)',
             background: 'rgba(255,255,255,0.02)',
