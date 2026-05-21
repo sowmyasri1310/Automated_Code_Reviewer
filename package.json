@@ -4,7 +4,7 @@
   "description": "Unified root monorepo settings for Automated Code Reviewer",
   "private": true,
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
-    "vercel-build": "cd frontend && npm install && npm run build"
+    "build": "cd frontend && npm install && npm run build && cd .. && cp -r frontend/dist dist",
+    "vercel-build": "cd frontend && npm install && npm run build && cd .. && cp -r frontend/dist dist"
   }
 }
