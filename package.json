@@ -1,0 +1,9 @@
+{
+  "name": "automated-code-reviewer-root",
+  "version": "1.0.0",
+  "description": "Unified root monorepo settings for Automated Code Reviewer",
+  "private": true,
+  "scripts": {
+    "vercel-build": "cd frontend && npm install && npm run build"
+  }
+}
