@@ -1,5 +1,6 @@
 import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { traceable, getCurrentRunTree } from 'langsmith/traceable';
 import History from '../models/History.js';
 
 const router = express.Router();
@@ -41,6 +42,47 @@ const getSystemInstruction = (personality) => {
   }
   return instructions;
 };
+
+// Traceable wrapper for Code Review
+const reviewCodeWithAI = traceable(
+  async (prompt, model, modelName, personality) => {
+    const runTree = getCurrentRunTree();
+    if (runTree) {
+      runTree.metadata = {
+        ...runTree.metadata,
+        ls_provider: "google",
+        ls_model_name: modelName,
+        personality: personality,
+      };
+    }
+    const result = await model.generateContent(prompt);
+    return result.response.text();
+  },
+  {
+    name: "Code Review",
+    run_type: "llm"
+  }
+);
+
+// Traceable wrapper for Code Comparison
+const compareCodeWithAI = traceable(
+  async (prompt, model, modelName) => {
+    const runTree = getCurrentRunTree();
+    if (runTree) {
+      runTree.metadata = {
+        ...runTree.metadata,
+        ls_provider: "google",
+        ls_model_name: modelName,
+      };
+    }
+    const result = await model.generateContent(prompt);
+    return result.response.text();
+  },
+  {
+    name: "Code Comparison",
+    run_type: "llm"
+  }
+);
 
 // @route   POST /api/review
 // @desc    Perform code review using Gemini
@@ -120,8 +162,7 @@ router.post('/review', async (req, res) => {
     Strictly adhere to the JSON schema. Do not write anything outside of valid JSON. Ensure lines in "stepByStep" reference lines in the original code.
     `;
 
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    const responseText = await reviewCodeWithAI(prompt, model, modelName, personality);
     
     let reviewResult;
     try {
@@ -213,8 +254,7 @@ router.post('/compare', async (req, res) => {
     Strictly adhere to the JSON schema. Do not write anything outside of valid JSON.
     `;
 
-    const result = await model.generateContent(prompt);
-    const responseText = result.response.text();
+    const responseText = await compareCodeWithAI(prompt, model, modelName);
     
     let compareResult;
     try {
